@@ -1,7 +1,8 @@
+"""Global Settings"""
+
 # Python imports
 import os
 import ssl
-from urllib.parse import urlparse
 
 import certifi
 
@@ -10,9 +11,6 @@ import dj_database_url
 
 # Django imports
 from django.core.management.utils import get_random_secret_key
-from sentry_sdk.integrations.celery import CeleryIntegration
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
 from corsheaders.defaults import default_headers
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -76,7 +74,7 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
     ),
-    # "EXCEPTION_HANDLER": "propelty.authentication.adapter.exception.auth_exception_handler",
+    # "EXCEPTION_HANDLER": "plane.authentication.adapter.exception.auth_exception_handler",
 }
 
 # Django Auth Backend
@@ -226,6 +224,11 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # Storage Settings
 # Use Minio settings
 USE_MINIO = int(os.environ.get("USE_MINIO", 0)) == 1
+
+# Celery Configuration
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["application/json"]
 
 if REDIS_SSL:
     redis_url = os.environ.get("REDIS_URL")
