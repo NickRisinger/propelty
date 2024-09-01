@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
   build:
@@ -14,9 +15,9 @@ jobs:
       db:
         image: postgres:15.7-alpine
         env:
-          POSTGRES_DB: mydatabase
-          POSTGRES_USER: myuser
-          POSTGRES_PASSWORD: mypassword
+          POSTGRES_DB: "github-actions"
+          POSTGRES_USER: "github-actions"
+          POSTGRES_PASSWORD: "github-actions"
         ports:
           - 5432:5432
         options: >-
