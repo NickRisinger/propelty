@@ -67,12 +67,12 @@ jobs:
       - name: Build Docker image
         run: |
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          docker build -t ghcr.io/${ REPO_NAME }:${{ env.tag }} .
+          docker build -t ghcr.io/${REPO_NAME}:${{ env.tag }} .
 
       - name: Push Docker image
         run: |
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
-          docker push ghcr.io/${ REPO_NAME }:${{ env.tag }}
+          docker push ghcr.io/${REPO_NAME}:${{ env.tag }}
 
 #      - name: Deploy to server
 #        run: |
