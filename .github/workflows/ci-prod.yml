@@ -62,7 +62,7 @@ jobs:
         id: env
         run: |
           echo "env=prod" >> $GITHUB_ENV
-          echo "tag=latest" >> $GITHUB_ENV
+          echo "tag=nickrisinger/propelty:latest" >> $GITHUB_ENV
           
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -83,7 +83,7 @@ jobs:
           context: ./apiserver
           file: ./apiserver/Dockerfile.dev
           platforms: linux/amd64,linux/arm64
-          tags: ${{ github.repository }}:${{ env.tag }}
+          tags: ${{ env.tag }}
           push: true
 
 #      - name: Deploy to server
