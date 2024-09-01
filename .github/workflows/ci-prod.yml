@@ -81,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v5.1.0
         with:
           context: ./apiserver
-          file: ./apiserver/Dockerfile.api
+          file: ./apiserver/Dockerfile.dev
           platforms: linux/amd64,linux/arm64
           tags: ${{ github.repository }}:${{ env.tag }}
           push: true
