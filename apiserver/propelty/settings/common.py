@@ -132,7 +132,7 @@ ASGI_APPLICATION = "propelty.asgi.application"
 SITE_ID = 1
 
 # User Model
-# AUTH_USER_MODEL = "db.User"
+AUTH_USER_MODEL = "db.User"
 
 # Database
 if bool(os.environ.get("DATABASE_URL")):
