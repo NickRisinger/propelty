@@ -1,0 +1,83 @@
+networks:
+  dev_env:
+    driver: bridge
+
+volumes:
+  redisdata:
+  uploads:
+  pgdata:
+
+services:
+  propelty-redis:
+    image: valkey/valkey:7.2.5-alpine
+    restart: unless-stopped
+    networks:
+      - dev_env
+    volumes:
+      - redisdata:/data
+
+  propelty-db:
+    image: postgres:15.7-alpine
+    restart: unless-stopped
+    networks:
+      - dev_env
+    command: postgres -c 'max_connections=1000'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      PGDATA: /var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./apiserver
+      dockerfile: Dockerfile.dev
+      args:
+        DOCKER_BUILDKIT: 1
+    restart: unless-stopped
+    networks:
+      - dev_env
+    volumes:
+      - ./apiserver:/code
+    command: ./bin/docker-entrypoint-api-local.sh
+    env_file:
+      - ./apiserver/.env
+    depends_on:
+      - propelty-db
+      - propelty-redis
+
+  migrator:
+    build:
+      context: ./apiserver
+      dockerfile: Dockerfile.dev
+      args:
+        DOCKER_BUILDKIT: 1
+    restart: "no"
+    networks:
+      - dev_env
+    volumes:
+      - ./apiserver:/code
+    command: ./bin/docker-entrypoint-migrator.sh --settings=propelty.settings.common
+    env_file:
+      - ./apiserver/.env
+    depends_on:
+      - propelty-db
+      - propelty-redis
+
+  proxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    networks:
+      - dev_env
+    ports:
+      - ${NGINX_PORT}:80
+    env_file:
+      - .env
+    environment:
+      FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-5242880}
+      BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-uploads}
+    depends_on:
+      - api
